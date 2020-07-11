@@ -17,8 +17,11 @@ mystem = Mystem()
 russian_stopwords = stopwords.words("russian")
 
 # Список размеченных профессий
-PRELOAD_PROFESSIONS = ['Менеджер по продажам']
-PRELOAD_PROFESSIONS_FILE_NAME = {'Менеджер по продажам': 'set_of_sales_manager_skills.csv'}
+PRELOAD_PROFESSIONS = ['Менеджер по продажам', "Продавец"]
+PRELOAD_PROFESSIONS_FILE_NAME = {
+    'Менеджер по продажам': 'set_of_sales_manager_skills.csv',
+    'Продавец': 'set_of_seller_skills.csv'
+}
 
 
 
@@ -97,9 +100,7 @@ class Skill:
     def add_keywords(self, keywords):
         """Функция добавляет в текущий объект новые ключевые слова
         keywords - это словарь {ключевое слово: регулярное выражение re.Pattern}"""
-        # Проверки на входе, что правильный тип данных
-        # ДОПИСАТЬСЯ
-        pass
+        self.keywords.update(keywords)
         return self
 
     def find_skill(self, resume_key_words):
