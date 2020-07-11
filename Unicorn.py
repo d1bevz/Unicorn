@@ -5,11 +5,20 @@ import numpy as np
 import nltk
 nltk.download("stopwords")
 #--------#
-
 from nltk.corpus import stopwords
 from pymystem3 import Mystem
 from string import punctuation
 from rutermextract import TermExtractor
+
+
+#Create lemmatizer and stopwords list
+mystem = Mystem() 
+russian_stopwords = stopwords.words("russian")
+
+# Список размеченных профессий
+PRELOAD_PROFESSIONS = ['Менеджер по продажам']
+PRELOAD_PROFESSIONS_FILE_NAME = {'Менеджер по продажам': 'set_of_sales_manager_skills.csv'}
+
 
 
 def preprocess_text(text):
