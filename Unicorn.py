@@ -57,6 +57,13 @@ def get_key_words_list(text):
     result = pd.DataFrame(dataframe_structure)
     return result
 
+def load_markedup_profession(profession):
+    """Функция возвращает предустановленную разметку для Менеджера по продажам"""
+    if profession in PRELOAD_PROFESSIONS:        
+        result = pd.read_csv(PRELOAD_PROFESSIONS_FILE_NAME[profession], sep=';')
+        return result.set_index('name')
+
+
 class Skill:
     name = ''
     kind = ''
