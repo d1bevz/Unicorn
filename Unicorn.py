@@ -99,9 +99,7 @@ class Skill:
     def add_keywords(self, keywords):
         """Функция добавляет в текущий объект новые ключевые слова
         keywords - это словарь {ключевое слово: регулярное выражение re.Pattern}"""
-        # Проверки на входе, что правильный тип данных
-        # ДОПИСАТЬСЯ
-        pass
+        self.keywords.update(keywords)
         return self
 
     def find_skill(self, text):
