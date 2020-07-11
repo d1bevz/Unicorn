@@ -28,6 +28,22 @@ def filter_by_position(data, position_pattern):
     result = data.str.lower().str.contains(pattern)
     return result
 
+def get_key_words_list(text):
+    """Получает из текста список всех ключевых слов"""
+    # Проходим извлекателем ключевых слов
+    term_extractor = TermExtractor()
+    terms = term_extractor(text)
+    # структура датафрейма
+    dataframe_structure = {
+        'key_word': []
+        , 'count': []
+    }
+    for term in terms:
+        dataframe_structure['key_word'].append(term.normalized)
+        dataframe_structure['count'].append(term.count)
+    
+    result = pd.DataFrame(dataframe_structure)
+    return result
 
 class Skill:
     name = ''
