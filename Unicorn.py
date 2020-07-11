@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 from pymystem3 import Mystem
 from string import punctuation
 from rutermextract import TermExtractor
+from fuzzywuzzy import fuzz
 
 
 #Create lemmatizer and stopwords list
@@ -101,15 +102,26 @@ class Skill:
         pass
         return self
 
-    def find_skill(self, text):
-        """Функция ищет упоминания навыка в тексте
-        text - это текст, в котором необходимо найти упоминание навыка"""
-        if (not pd.isnull(text)):
-            for keyword in self.keywords.keys():
-                result = re.findall(keyword, text.lower())
-                if len(result) > 0:
-                    return True
-        return False
+    def find_skill(self, resume_key_words):
+        """Функция проверяет схожесть ключевых слов по мере расстояния левенштайна и если находит хоть одно выше заданного threshold возвращает True
+        resume_key_words - это датафрейм с ключевыми словами из текста описания, получается функцией get_key_words_list"""
+        threshold = 90
+        result = resume_key_words.copy()
+        
+        simularity = lambda x, key_word: fuzz.partial_ratio(x, key_word)
+        
+        for keyword in self.keywords.keys():
+            result[keyword] = result['key_word'].apply(simularity, key_word=keyword)
+            result[keyword] = result[keyword][result[keyword] >= threshold]
+        
+        
+        result['match'] = result.loc[:, self.keywords.keys()].sum(axis=1)
+        
+        result = result.sort_values('match', ascending=False)
+        #return result
+        if result['match'].sum() > 0:
+            return True
+        else: return False
 
 
 class Vacancy:
