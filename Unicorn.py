@@ -16,8 +16,11 @@ mystem = Mystem()
 russian_stopwords = stopwords.words("russian")
 
 # Список размеченных профессий
-PRELOAD_PROFESSIONS = ['Менеджер по продажам']
-PRELOAD_PROFESSIONS_FILE_NAME = {'Менеджер по продажам': 'set_of_sales_manager_skills.csv'}
+PRELOAD_PROFESSIONS = ['Менеджер по продажам', "Продавец"]
+PRELOAD_PROFESSIONS_FILE_NAME = {
+    'Менеджер по продажам': 'set_of_sales_manager_skills.csv',
+    'Продавец': 'set_of_seller_skills.csv'
+}
 
 
 
