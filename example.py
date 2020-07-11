@@ -1,8 +1,8 @@
-from Unicorn import load_markedup_profession  # Выгрузка размеченных данных
+from Unicorn import load_markedup_profession, make_keywords_dict, Skill  # Выгрузка размеченных данных
 
 
 # Берем навыки для Менеджера по продажам    
-skills_raw =  load_markedup_profession('Менеджер по продажам')
+skills_raw =  load_markedup_profession('Продавец')
 skills_list = skills_raw.index.drop_duplicates().to_list()
 
 # Создаем парсер на все выбранные скилы

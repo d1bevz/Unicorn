@@ -63,6 +63,15 @@ def load_markedup_profession(profession):
         result = pd.read_csv(PRELOAD_PROFESSIONS_FILE_NAME[profession], sep=';')
         return result.set_index('name')
 
+def make_keywords_dict(keywords):
+    """Функция возвращает словарь со всеми паттернами из ключевых слов"""
+    
+    result = {}
+    if type(keywords)==str:
+        return {keywords:re.compile(keywords)}
+    for keyword in keywords:
+        result[keyword] = re.compile(keyword)
+    return result 
 
 class Skill:
     name = ''
