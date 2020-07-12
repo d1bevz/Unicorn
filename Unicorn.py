@@ -133,9 +133,10 @@ class Position:
     skills = []
 
     def __init__(self, name, experience, skills = None):
-        """Конструктор класса Vacancy
-        vacancy - запись вакансии
-        Создает объект Vacancy на основе записи
+        """Конструктор класса Position
+        name - название позиции
+        experience - опыт
+        skills - список объектов скиллов
         """
 
         self.name = name
@@ -143,7 +144,7 @@ class Position:
         self.skills = skills
 
         print(
-            f'Вакансия "{self.name}" успешно создана. Опыт {experience}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
+            f'Позиция "{self.name}" успешно создана. Опыт {experience}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
 
 
     def add_skills(self, skills):

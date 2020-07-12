@@ -17,6 +17,4 @@ for skill in skills_list:
     skills_objects.append(
         Skill(name=skill, kind=skill_kind, keywords=skill_keywords)
     )
-    
-
 
