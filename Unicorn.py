@@ -100,8 +100,6 @@ class Skill:
     def add_keywords(self, keywords):
         """Функция добавляет в текущий объект новые ключевые слова
         keywords - это словарь {ключевое слово: регулярное выражение re.Pattern}"""
-        if self.keywords == None:
-            self.keywords = {}
         self.keywords.update(keywords)
         return self
 
@@ -141,7 +139,8 @@ class Position:
 
         self.name = name
         self.experience = experience
-        self.skills = skills
+        if not skills == None:
+            self.skills = skills
 
         print(
             f'Позиция "{self.name}" успешно создана. Опыт {experience}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
@@ -149,9 +148,7 @@ class Position:
 
     def add_skills(self, skills):
         """Функция добавляет в текущий объект новые навыки"""
-        if self.skills == None:
-            self.skills = {}
-        self.skills.update(skills)
+        self.skills.append(skills)
         return self
 
 
