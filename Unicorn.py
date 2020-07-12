@@ -100,6 +100,8 @@ class Skill:
     def add_keywords(self, keywords):
         """Функция добавляет в текущий объект новые ключевые слова
         keywords - это словарь {ключевое слово: регулярное выражение re.Pattern}"""
+        if self.keywords == None:
+            self.keywords = {}
         self.keywords.update(keywords)
         return self
 
@@ -125,29 +127,32 @@ class Skill:
         else: return False
 
 
-class Vacancy:
+class Position:
     name = ''
-    name_pattern = ''
     experience = ''
     skills = []
 
-    def __init__(self, vacancy):
+    def __init__(self, name, experience, skills = None):
         """Конструктор класса Vacancy
         vacancy - запись вакансии
         Создает объект Vacancy на основе записи
         """
 
-        term_extractor = TermExtractor()
-
-        self.name = vacancy['name.lemm']
-        self.name_pattern = re.compile("|".join([term.normalized for term in term_extractor(self.name, limit=10)]))
-        self.experience = vacancy['experience']
-        self.skills = [Skill(skill, 'skill') for skill in self.get_list_skills(vacancy)]
-
-        experience_name = vacancy['experience.name']
+        self.name = name
+        self.experience = experience
+        self.skills = skills
 
         print(
-            f'Вакансия "{self.name}" успешно создана. Опыт {experience_name}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
+            f'Вакансия "{self.name}" успешно создана. Опыт {experience}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
+
+
+    def add_skills(self, skills):
+        """Функция добавляет в текущий объект новые навыки"""
+        if self.skills == None:
+            self.skills = {}
+        self.skills.update(skills)
+        return self
+
 
     def get_list_skills(self, vacancy):
         """Функция из записи получает список ключевых навыков"""
@@ -164,6 +169,8 @@ class Vacancy:
         return skills;
 
     def check_experience(self):
+        """Функция возвращает условия фильтрация по опыту"""
+
         return {
             'noExperience': (lambda x: x < 1),
             'between1And3': (lambda x: x >= 1 and x <= 3),
@@ -173,9 +180,6 @@ class Vacancy:
 
     def get_vacancies(self, df):
         """Метод возвращает отфильтрованные вакансии"""
-
-        # Фильтрация по позиции
-        df = df.loc[df.position.str.lower().str.contains(self.name_pattern)].dropna()
 
         # Фильтрация по опыту
         df = df[df.experience.apply(self.check_experience())]
@@ -190,4 +194,3 @@ class Vacancy:
 
         # Возращает топ 10 кандидатов
         return df.sort_values(['Спидометр', 'experience'], ascending=False).head(10)
-
