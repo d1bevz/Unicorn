@@ -2,19 +2,9 @@ import re  # Работа с регулярными выражениями
 import pandas as pd
 import string
 import numpy as np
-import nltk
-nltk.download("stopwords")
-#--------#
-from nltk.corpus import stopwords
-from pymystem3 import Mystem
-from string import punctuation
 from rutermextract import TermExtractor
 from fuzzywuzzy import fuzz
 
-
-#Create lemmatizer and stopwords list
-mystem = Mystem() 
-russian_stopwords = stopwords.words("russian")
 
 # Список размеченных профессий
 PRELOAD_PROFESSIONS = ['Менеджер по продажам', "Продавец"]
@@ -23,16 +13,6 @@ PRELOAD_PROFESSIONS_FILE_NAME = {
     'Продавец': 'set_of_seller_skills.csv'
 }
 
-
-
-def preprocess_text(text):
-    """Функция делает предобработку текста"""
-    tokens = mystem.lemmatize(text.lower())
-    tokens = [token for token in tokens if token not in russian_stopwords \
-              and token != " " \
-              and token.strip() not in punctuation]
-    text = " ".join(tokens)
-    return text
 
 def filter_by_position(data, position_pattern):
     """Функция фильтрует по названию профессии и возвращает индексы совпавших с паттерном строк
