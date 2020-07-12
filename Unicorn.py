@@ -160,7 +160,7 @@ class Position:
         result = {}
         for skill in self.skills:
             result[skill.name] = skill.find_skill(key_words)
-            
+        return result
     
     
     def get_vacancies(self, df):
