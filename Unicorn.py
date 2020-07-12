@@ -163,19 +163,3 @@ class Position:
         return result
     
     
-    def get_vacancies(self, df):
-        """Метод возвращает отфильтрованные вакансии"""
-
-        # Фильтрация по опыту
-        df = df[df.experience.apply(self.check_experience())]
-
-        # Установка флагов по скиллам
-        for skill in self.skills:
-            df[skill.name] = df.description.apply(skill.find_skill)
-
-        # Расчет спидометра
-        skill_names = [x.name for x in self.skills]
-        df.insert(0, 'Спидометр', df[skill_names].sum(axis=1))
-
-        # Возращает топ 10 кандидатов
-        return df.sort_values(['Спидометр', 'experience'], ascending=False).head(10)
