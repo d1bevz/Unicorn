@@ -2,19 +2,9 @@ import re  # Работа с регулярными выражениями
 import pandas as pd
 import string
 import numpy as np
-import nltk
-nltk.download("stopwords")
-#--------#
-from nltk.corpus import stopwords
-from pymystem3 import Mystem
-from string import punctuation
 from rutermextract import TermExtractor
 from fuzzywuzzy import fuzz
 
-
-#Create lemmatizer and stopwords list
-mystem = Mystem() 
-russian_stopwords = stopwords.words("russian")
 
 # Список размеченных профессий
 PRELOAD_PROFESSIONS = ['Менеджер по продажам', "Продавец"]
@@ -23,16 +13,6 @@ PRELOAD_PROFESSIONS_FILE_NAME = {
     'Продавец': 'set_of_seller_skills.csv'
 }
 
-
-
-def preprocess_text(text):
-    """Функция делает предобработку текста"""
-    tokens = mystem.lemmatize(text.lower())
-    tokens = [token for token in tokens if token not in russian_stopwords \
-              and token != " " \
-              and token.strip() not in punctuation]
-    text = " ".join(tokens)
-    return text
 
 def filter_by_position(data, position_pattern):
     """Функция фильтрует по названию профессии и возвращает индексы совпавших с паттерном строк
@@ -129,12 +109,13 @@ class Position:
     name = ''
     experience = ''
     skills = []
+    last_text_key_words = None
 
     def __init__(self, name, experience, skills = None):
         """Конструктор класса Position
         name - название позиции
-        experience - опыт
-        skills - список объектов скиллов
+        experience - опыт работы
+        skills - список объектов
         """
 
         self.name = name
@@ -145,26 +126,16 @@ class Position:
         print(
             f'Позиция "{self.name}" успешно создана. Опыт {experience}. Ключевые навыки: {["".join(str(x.name)) for x in self.skills]}')
 
-
     def add_skills(self, skills):
         """Функция добавляет в текущий объект новые навыки"""
         self.skills.append(skills)
         return self
 
-
-    def get_list_skills(self, vacancy):
-        """Функция из записи получает список ключевых навыков"""
-
-        # Получаем ключевые слова
-        term_extractor = TermExtractor()
-        skills = [term.normalized for term in term_extractor(vacancy['description'], limit=10)]
-
-        # Если присуствует запись 'key_skills' от из нее извлекаем ключевые навыки
-        # и добавляем к другим навыкам полученным через rutermextract
-        if (not pd.isnull(vacancy['key_skills'])):
-            skills = list(set(skills) | set(vacancy['key_skills'].lower().split(' | ')))  # Убираем совпадения
-
-        return skills;
+    def get_list_skills(self, text):
+        """Функция из записи получает список ключевых навыков
+        Результат будет сохранен в переменной last_text_key_words"""
+        self.last_text_key_words = load_markedup_profession(text)
+        return self.last_text_key_words
 
     def check_experience(self):
         """Функция возвращает условия фильтрация по опыту"""
@@ -175,7 +146,20 @@ class Position:
             'between3And6': (lambda x: x >= 3 and x <= 6),
             'moreThan6': (lambda x: x > 6)
         }[self.experience]
-
+    
+    def check_skills(self, text=None, key_words=self.last_text_key_words):
+        """Функция проверяет наличие навыков в текстовом описание кандидата, либо в списке ключевых слов. 
+        По умолчанию использует последний проанализированный текст, если была проверка до этого"""
+        if text!=None:
+            key_words=self.get_list_skills(text)
+        if text==None and key_words==None:
+            raise TypeError
+        result = {}
+        for skill in self.skills:
+            result[skill.name] = skill.find_skill(key_words)
+        return result
+    
+    
     def get_vacancies(self, df):
         """Метод возвращает отфильтрованные вакансии"""
 
