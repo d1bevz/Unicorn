@@ -11,7 +11,7 @@
 - Продавец
 
 ## Установка
-`pip install git+https://github.com/d1bevz/Unicorn`
+`pip install git+https://github.com/d1bevz/Unicorn.git#egg=Unicorn`
 
 ## Использование
 ```python
