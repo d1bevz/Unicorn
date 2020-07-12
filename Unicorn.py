@@ -149,15 +149,13 @@ class Position:
     
     def check_skills(self, text=None):
         """Функция проверяет наличие навыков в текстовом описание кандидата, либо в списке ключевых слов. 
-        По умолчанию использует последний проанализированный текст, если была проверка до этого"""
-        if text==None and key_words==None:
-            raise TypeError
-            
+        По умолчанию использует последний проанализированный текст, если была проверка до этого"""      
         if text!=None:
             key_words=self.get_list_skills(text)
         else:
             key_words=self.last_text_key_words
-
+        if text==None and key_words==None:
+            raise TypeError
         result = {}
         for skill in self.skills:
             result[skill.name] = skill.find_skill(key_words)
