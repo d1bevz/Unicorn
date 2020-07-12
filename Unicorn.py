@@ -87,6 +87,7 @@ class Skill:
         """Функция проверяет схожесть ключевых слов по мере расстояния левенштайна и если находит хоть одно выше заданного threshold возвращает True
         resume_key_words - это датафрейм с ключевыми словами из текста описания, получается функцией get_key_words_list"""
         threshold = 90
+        if len(resume_key_words)==None: return False  # Проверка на то, что ключевые слова были переданы    
         result = resume_key_words.copy()
         
         simularity = lambda x, key_word: fuzz.partial_ratio(x, key_word)
@@ -134,7 +135,7 @@ class Position:
     def get_list_skills(self, text):
         """Функция из записи получает список ключевых навыков
         Результат будет сохранен в переменной last_text_key_words"""
-        self.last_text_key_words = load_markedup_profession(text)
+        self.last_text_key_words = get_key_words_list(text)
         return self.last_text_key_words
 
     def check_experience(self):
